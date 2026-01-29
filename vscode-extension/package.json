@@ -1,0 +1,92 @@
+{
+  "name": "devcopilot-extension",
+  "displayName": "DevCopilot Extension",
+  "description": "Semantic code search and PR summarization for your codebase",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:devcopilot.indexRepository",
+    "onCommand:devcopilot.showPipelineStatus",
+    "onCommand:devcopilot.searchCode",
+    "onCommand:devcopilot.summarizePR"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devcopilot.indexRepository",
+        "title": "DevCopilot: Index Repository",
+        "icon": "$(database)"
+      },
+      {
+        "command": "devcopilot.showPipelineStatus",
+        "title": "DevCopilot: Show Pipeline Status",
+        "icon": "$(info)"
+      },
+      {
+        "command": "devcopilot.searchCode",
+        "title": "DevCopilot: Search Codebase",
+        "icon": "$(search)"
+      },
+      {
+        "command": "devcopilot.summarizePR",
+        "title": "DevCopilot: Summarize PR",
+        "icon": "$(git-pull-request)"
+      }
+    ],
+    "configuration": {
+      "title": "DevCopilot",
+      "properties": {
+        "devcopilot.pythonPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\env\\Scripts\\python.exe",
+          "description": "Path to Python executable"
+        },
+        "devcopilot.cliPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\cli.py",
+          "description": "Path to cli.py (leave empty for workspace root)"
+        },
+        "devcopilot.chromaDbPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\data\\chroma_db",
+          "description": "Path to ChromaDB storage"
+        },
+        "devcopilot.collectionName": {
+          "type": "string",
+          "default": "flask_code",
+          "description": "ChromaDB collection name"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "devcopilot.resultsView",
+          "name": "DevCopilot Results"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "typescript": "^5.x"
+  }
+}

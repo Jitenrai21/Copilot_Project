@@ -1,0 +1,133 @@
+{
+  "name": "devcopilot-v3",
+  "displayName": "DevCopilot v3 - Advanced Edition",
+  "description": "Advanced semantic code search (HyDE/RAG) and PR summarization with API-based LLM integration",
+  "version": "3.0.0",
+  "publisher": "devcopilot",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/devcopilot.git"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:devcopilotV2.indexRepository",
+    "onCommand:devcopilotV2.showPipelineStatus",
+    "onCommand:devcopilotV2.searchCodeHyde",
+    "onCommand:devcopilotV2.searchCodeRag",
+    "onCommand:devcopilotV2.summarizePR",
+    "onCommand:devcopilotV2.selectRepository",
+    "onCommand:devcopilotV2.setApiKey"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devcopilotV3.indexRepository",
+        "title": "DevCopilot v3: Index Repository",
+        "icon": "$(database)"
+      },
+      {
+        "command": "devcopilotV3.showPipelineStatus",
+        "title": "DevCopilot v3: Show Pipeline Status",
+        "icon": "$(info)"
+      },
+      {
+        "command": "devcopilotV3.searchCodeHyde",
+        "title": "DevCopilot v3: Search Code (HyDE)",
+        "icon": "$(search)"
+      },
+      {
+        "command": "devcopilotV3.searchCodeRag",
+        "title": "DevCopilot v3: Ask Question (RAG)",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "devcopilotV3.summarizePR",
+        "title": "DevCopilot v3: Summarize PR",
+        "icon": "$(git-pull-request)"
+      },
+      {
+        "command": "devcopilotV3.selectRepository",
+        "title": "DevCopilot v3: Select Repository",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "devcopilotV3.setApiKey",
+        "title": "DevCopilot v3: Set API Key",
+        "icon": "$(key)"
+      }
+    ],
+    "configuration": {
+      "title": "DevCopilot v3",
+      "properties": {
+        "devcopilotV3.pythonPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\env\\Scripts\\python.exe",
+          "description": "Path to Python executable"
+        },
+        "devcopilotV3.cliPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\cli_v2.py",
+          "description": "Path to cli_v2.py (leave empty for workspace root)"
+        },
+        "devcopilotV3.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "LLM API Key (Groq, OpenAI, etc.) - DEPRECATED: Use 'DevCopilot: Set API Key' command or LLM_API_KEY environment variable for secure storage"
+        },
+        "devcopilotV3.apiUrl": {
+          "type": "string",
+          "default": "https://api.groq.com/openai/v1/chat/completions",
+          "description": "LLM API endpoint URL"
+        },
+        "devcopilotV3.modelName": {
+          "type": "string",
+          "default": "llama-3.3-70b-versatile",
+          "description": "LLM model name"
+        },
+        "devcopilotV3.chromaDbPath": {
+          "type": "string",
+          "default": "D:\\dev-copilot\\data\\chroma_db",
+          "description": "Path to ChromaDB storage"
+        },
+        "devcopilotV3.collectionName": {
+          "type": "string",
+          "default": "flask_code",
+          "description": "ChromaDB collection name"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "devcopilotV3.resultsView",
+          "name": "DevCopilot v3 Results",
+          "visibility": "visible"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "typescript": "^5.x"
+  }
+}

@@ -1,0 +1,14 @@
+vscode-extension/
+├── src/
+│   ├── extension.ts                    # Main entry point
+│   ├── cliIntegration.ts              # Python CLI execution & parsing
+│   ├── commands/
+│   │   ├── searchCode.ts              # Search command handler
+│   │   └── summarizePR.ts             # PR summarization handler
+│   └── webview/
+│       └── resultsViewProvider.ts     # Interactive results display
+├── package.json                        # Extension manifest with commands & config
+├── tsconfig.json                       # TypeScript configuration
+├── README.md                           # Full documentation
+├── QUICKSTART.md                       # Quick setup guide
+└── .vscode/                            # Debug configuration

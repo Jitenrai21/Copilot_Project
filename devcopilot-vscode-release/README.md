@@ -1,0 +1,249 @@
+# DevCopilot v3 VS Code Extension - Advanced Edition
+
+A VS Code extension that provides **advanced semantic code search** (HyDE/RAG) and **PR summarization** powered by API-based LLMs with local embeddings.
+
+## ✨ Features
+
+### 🔍 Advanced Code Search - HyDE Mode
+- Generate hypothetical code via API, then search for similar real code
+- Best for: "Show me error handling code", "database connection functions"
+- **Interactive results**: Click on any result to open the file at the exact line
+- Real-time similarity scoring with method indicators
+
+### 💡 Topic Queries - RAG Mode  
+- Retrieve relevant code chunks and generate explanations with full context
+- Best for: "How does routing work?", "What is the Blueprint class?"
+- Get comprehensive answers backed by source code references
+
+### 📝 PR Summarization with Atomic Change Detection
+- Automatically generate summaries of pull requests
+- API-based LLM for intelligent summarization
+- Atomic change detection and analysis
+- Works with your git repository
+
+### 🎯 User-Friendly Workflow
+- **One-click indexing**: Select a repository and index it automatically
+- **Mode-based search**: Explicitly choose HyDE or RAG for predictable results
+- **Workspace state**: Each workspace remembers its configuration
+- **Visual feedback**: Progress indicators and status commands
+
+### 🔒 Privacy & Flexibility
+- Local embeddings with Jina v2 code model
+- API-based LLM (Groq, OpenAI, or custom endpoints)
+- Configurable API keys and endpoints
+- Your code embeddings stay on your machine
+
+## Quick Start
+
+### 1. Install and Setup
+
+```bash
+cd vscode-extension-v2
+npm install
+npm run compile
+```
+
+Press `F5` in VS Code to launch the Extension Development Host.
+
+### 2. Configure API Key
+
+**Recommended (Most Secure):**
+Use the built-in command to store your API key securely:
+1. Open Command Palette (`Ctrl+Shift+P`)
+2. Run: **DevCopilot: Set API Key**
+3. Enter your API key (it will be stored securely in VS Code's SecretStorage)
+
+**Alternative Methods:**
+- **Environment Variable**: Set `LLM_API_KEY` in your system environment and restart VS Code
+- **Settings** (not recommended for security): Set `devcopilotV2.apiKey` in VS Code settings
+
+Your API key is retrieved in this priority order:
+1. SecretStorage (most secure) ✅
+2. Environment variable
+3. VS Code settings (fallback only)
+
+**Security Note**: Never commit API keys to version control. Use the "Set API Key" command or environment variables for secure storage.
+
+### 3. Index a Repository
+
+1. Open Command Palette (`Ctrl+Shift+P`)
+2. Run: **DevCopilot v2: Index Repository**
+3. Select your repository folder
+4. Wait for indexing to complete
+
+### 4. Start Searching!
+
+**For Code Search (HyDE):**
+1. Open Command Palette
+2. Run: **DevCopilot v2: Search Code (HyDE)**
+3. Enter your query (e.g., "error handling middleware")
+
+**For Topic Questions (RAG):**
+1. Open Command Palette
+2. Run: **DevCopilot v2: Ask Question (RAG)**
+3. Enter your question (e.g., "How does Flask routing work?")
+4. Click on source references to navigate to code
+
+## Prerequisites
+
+1. **Python 3.8+** with DevCopilot CLI v2 dependencies installed:
+   ```bash
+   pip install typer rich chromadb sentence-transformers tree-sitter-languages requests python-dotenv
+   ```
+2. **LLM API Key** - Get a free key from [Groq](https://console.groq.com) or use OpenAI/compatible endpoint
+3. **VS Code 1.80.0+**
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `DevCopilot: Set API Key` | Securely store your LLM API key (recommended) |
+| `DevCopilot v2: Index Repository` | Select and index a repository for searching |
+| `DevCopilot v2: Show Pipeline Status` | View current pipeline configuration |
+| `DevCopilot v2: Search Code (HyDE)` | Search code using hypothetical document embeddings |
+| `DevCopilot v2: Ask Question (RAG)` | Get explanations with retrieval-augmented generation |
+| `DevCopilot v2: Summarize PR` | Generate a summary of git changes with API-based LLM |
+
+## Configuration
+
+Configure settings in VS Code (`Ctrl+,` or `Cmd+,`):
+
+```json
+{
+  "devcopilotV2.pythonPath": "python",
+  "devcopilotV2.cliPath": "/absolute/path/to/cli_v2.py",
+  "devcopilotV2.apiKey": "",  // DEPRECATED: Use "DevCopilot: Set API Key" command instead
+  "devcopilotV2.apiUrl": "https://api.groq.com/openai/v1/chat/completions",
+  "devcopilotV2.modelName": "llama-3.3-70b-versatile",
+  "devcopilotV2.chromaDbPath": "data/chroma_db_api",
+  "devcopilotV2.collectionName": "code_collection"
+}
+```
+
+**Note**: 
+- Use the "DevCopilot: Set API Key" command to store your API key securely instead of putting it in settings.
+- Manual configuration is rarely needed as the extension handles paths automatically.
+
+## How It Works
+
+### Workflow
+
+1. **Index**: Select a repository → Extension creates `.devcopilot/chroma_db` → Indexes code
+2. **Search**: Enter query → Semantic search via embeddings → Results displayed
+3. **Navigate**: Click results → File opens at exact line
+
+### Pipeline Management
+
+- **Workspace State**: Configuration is stored per workspace, not globally
+- **Auto-generated Paths**: DB and collection names are created automatically
+- **Fallback to Settings**: If no workspace state exists, uses settings.json
+
+## Architecture
+
+```
+vscode-extension/
+├── src/
+│   ├── extension.ts              # Extension entry point
+│   ├── cliIntegration.ts         # Python CLI integration
+│   ├── commands/
+│   │   ├── searchCode.ts         # Search command handler
+│   │   └── summarizePR.ts        # PR summarization handler
+│   └── webview/
+│       └── resultsViewProvider.ts # Webview for displaying results
+├── package.json                   # Extension manifest
+├── tsconfig.json                  # TypeScript configuration
+└── README.md                      # This file
+```
+
+### Key Components
+
+1. **CLI Integration** (`cliIntegration.ts`):
+   - Executes Python CLI using Node.js `child_process`
+   - Parses CLI output (rich-formatted text)
+   - Handles errors and timeouts
+
+2. **Commands** (`commands/`):
+   - `searchCode.ts`: Prompts for query, calls CLI, displays results
+   - `summarizePR.ts`: Runs PR summarization, displays formatted summary
+
+3. **Webview Provider** (`webview/resultsViewProvider.ts`):
+   - Renders search results with syntax highlighting
+   - Displays PR summaries with validation metrics
+   - Shows errors with user-friendly messages
+
+## Development
+
+### Build and Watch
+
+```bash
+npm run compile   # Compile TypeScript
+npm run watch     # Watch for changes and recompile
+```
+
+### Debug
+
+1. Open the extension directory in VS Code
+2. Press `F5` to launch Extension Development Host
+3. Test commands in the development instance
+
+### Linting
+
+```bash
+npm run lint
+```
+
+## Troubleshooting
+
+### API Key Issues
+
+**"No API key configured" Error:**
+1. Run the **DevCopilot: Set API Key** command and enter your key
+2. Or set the `LLM_API_KEY` environment variable and restart VS Code
+3. Verify your key is valid (check API provider dashboard)
+
+**API Key Not Working:**
+- Ensure you're using the correct API endpoint for your provider
+- Check API key permissions and rate limits
+- Test the key with a direct API call outside VS Code
+
+### "Collection not found" Error
+
+- Ensure you've indexed the repository using `python cli.py index`
+- Verify the `chromaDbPath` and `collectionName` settings match your indexed data
+
+### Python CLI Not Found
+
+- Set `devcopilot.cliPath` to the absolute path of `cli.py`
+- Verify `devcopilot.pythonPath` points to the correct Python executable
+
+### No Results Displayed
+
+- Check the Output panel (View > Output > DevCopilot) for errors
+- Verify the Python CLI works independently: `python cli.py search "test query"`
+
+### Ollama Connection Failed (PR Summarization)
+
+- Ensure Ollama is running: `ollama serve`
+- Verify CodeLlama model is installed: `ollama pull codellama:7b-instruct`
+
+## Known Limitations
+
+- Search results are parsed from rich-formatted CLI output (future: JSON output)
+- PR summarization requires Ollama running locally
+- Extension currently supports Python repositories only
+
+## Future Enhancements
+
+- JSON output mode for CLI for easier parsing
+- Support for multiple programming languages
+- Inline code annotations from search results
+- Interactive retry for failed PR file summaries
+- Caching and incremental indexing
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please open issues or pull requests on the repository.
