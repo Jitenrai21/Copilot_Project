@@ -2,6 +2,14 @@
 
 ---
 
+## Complete Application workflow demonstration:
+
+<div align="center">
+  <img src="https://github.com/Jitenrai21/Copilot_Project/blob/main/demo/devCopilot.gif" alt="Demo" width="1080"/>
+</div>
+
+---
+
 ## Project Vision & Purpose
 
 **AI Developer Copilot (devcopilot)** is an advanced development tool that combines semantic code search with intelligent PR summarization, creating a comprehensive AI-assisted development environment. The project enables developers to:
